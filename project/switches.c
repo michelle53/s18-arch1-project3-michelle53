@@ -1,6 +1,10 @@
 #include <msp430.h>
 #include "switches.h"
 //#include "led.h"
+#include <lcdutils.h>
+#include <lcddraw.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 void switch_init(){			/* setup switch */  
@@ -10,3 +14,4 @@ void switch_init(){			/* setup switch */
   P2DIR &= ~SWITCHES;		/* set switches' bits for input */
 
 }
+

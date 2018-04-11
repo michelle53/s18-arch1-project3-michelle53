@@ -16,8 +16,11 @@
 #define bt4 ((P2IN & SW4) != SW4) //for SW4
 
 void switch_init();
+//void update_score();
 
 extern int stateS1, stateS2, stateS3, stateS4; //buzzer and led states
 extern int dim; //dimness of leds
+extern int score;
+extern char *scoreC;
 
 #endif // included
