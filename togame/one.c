@@ -89,19 +89,24 @@ void moveIt(MovLayer *ml, Region *fence){
   // move.axes[0] = .025;
   // move.axes[1] = .025;
   //  for (; ml; ml = ml->next) {
-  vec2Add(&newPos, &ml->layer->posNext, &ml->velocity);
-  // vec2Add(&newPos, move, &ml->velocity); 
+  //  vec2Add(&newPos, &ml->layer->posNext, &ml->velocity);
+   vec2Add(&newPos, &ml->layer->posNext, &ml->velocity); 
   abShapeGetBounds(ml->layer->abShape, &newPos, &shapeBoundary);
-    for (axis = 0; axis < 2; axis ++) {
+    for (axis = 0; axis < 1; axis ++) {
       if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]) ||
 	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]) ) {
 		int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
 	newPos.axes[axis] += (velocity);
       }	/**< if outside of fence */
     } /**< for axis */
-    ml->layer->posNext = newPos;
+    //    newPos.axes[0] = ml->velocity.axes[1];
+      //  newPos.axes[0] += ml->velocity.axes[0];
+  newPos.axes[1] -= ml->velocity.axes[1];
+  ml->layer->posNext = newPos;
     // } /**< for ml */
+}
 
+void moveItDown(){
 
 }
 
