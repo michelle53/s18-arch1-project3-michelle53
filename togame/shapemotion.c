@@ -26,13 +26,19 @@ AbRectOutline fieldOutline = {	/* playing field */
   {screenWidth/2 - 10, screenHeight/2 - 10}
 };
 
+Layer layer1 = {
+  (AbShape *) &circle10,
+  {(screenWidth/3) + 10, (screenHeight/3) + 5},
+  COLOR_GREEN,
+  0,
+};
 
 Layer fieldLayer = {		/* playing field as a layer */
   (AbShape *) &fieldOutline,
   {screenWidth/2, screenHeight/2},/**< center */
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_BLACK,
-  0,
+  COLOR_PINK,
+  &layer1,
 };
 
 
@@ -40,7 +46,7 @@ Layer layer0 = {		/**< Layer with an orange circle */
   (AbShape *)&pac14,
   {(screenWidth/2)+10, (screenHeight/2)+5}, /**< bit below & right of center */
   {0,0}, {0,0},				    /* last & next pos */
-  COLOR_ORANGE,
+  COLOR_YELLOW,
   &fieldLayer,
 };
 
@@ -56,11 +62,10 @@ typedef struct MovLayer_s {
 
 /* initial value of {0,0} will be overwritten */
 //vLayer ml3 = { &layer3, {1,1}, 0 }; /**< not all layers move */
-//vLayer ml1 = { &layer1, {1,2}, &ml3 }; 
+MovLayer ml1 = { &layer1, {1,2}, 0 }; 
 MovLayer ml0 = { &layer0, {2,1}, 0 }; 
 
-void movLayerDraw(MovLayer *movLayers, Layer *layers)
-{
+void movLayerDraw(MovLayer *movLayers, Layer *layers){
   int row, col;
   MovLayer *movLayer;
 
@@ -105,8 +110,7 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers)
  *  \param ml The moving shape to be advanced
  *  \param fence The region which will serve as a boundary for ml
  */
-void mlAdvance(MovLayer *ml, Region *fence)
-{
+void mlAdvance(MovLayer *ml, Region *fence){
   Vec2 newPos;
   u_char axis;
   Region shapeBoundary;
@@ -125,6 +129,7 @@ void mlAdvance(MovLayer *ml, Region *fence)
 }
 
 
+
 u_int bgColor = COLOR_BLUE;     /**< The background color */
 int redrawScreen = 1;           /**< Boolean for whether screen needs to be redrawn */
 
@@ -134,8 +139,7 @@ Region fieldFence;		/**< fence around playing field  */
 /** Initializes everything, enables interrupts and green LED, 
  *  and handles the rendering for the screen
  */
-void main()
-{
+void main(){
   P1DIR |= GREEN_LED;		/**< Green led on when CPU on */		
   P1OUT |= GREEN_LED;
 
@@ -169,8 +173,7 @@ void main()
 }
 
 /** Watchdog timer interrupt handler. 15 interrupts/sec */
-void wdt_c_handler()
-{
+void wdt_c_handler(){
   static short count = 0;
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
   count ++;
