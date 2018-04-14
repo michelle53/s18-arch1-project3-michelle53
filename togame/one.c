@@ -81,34 +81,42 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers){
   } // for moving layer being updated
 }	  
 
-void moveIt(MovLayer *ml, Region *fence){
+void moveRight(MovLayer *ml, Region *fence){
   Vec2 newPos;
   u_char axis;
   Region shapeBoundary;
-  //  Vec2 move;
-  // move.axes[0] = .025;
-  // move.axes[1] = .025;
-  //  for (; ml; ml = ml->next) {
-  //  vec2Add(&newPos, &ml->layer->posNext, &ml->velocity);
-   vec2Add(&newPos, &ml->layer->posNext, &ml->velocity); 
+  vec2Add(&newPos, &ml->layer->posNext, &ml->velocity); 
   abShapeGetBounds(ml->layer->abShape, &newPos, &shapeBoundary);
-    for (axis = 0; axis < 1; axis ++) {
-      if ((shapeBoundary.topLeft.axes[axis] < fence->topLeft.axes[axis]) ||
-	  (shapeBoundary.botRight.axes[axis] > fence->botRight.axes[axis]) ) {
-		int velocity = ml->velocity.axes[axis] = -ml->velocity.axes[axis];
-	newPos.axes[axis] += (velocity);
-      }	/**< if outside of fence */
-    } /**< for axis */
-    //    newPos.axes[0] = ml->velocity.axes[1];
-      //  newPos.axes[0] += ml->velocity.axes[0];
+  // for (axis = 0; axis < 1; axis ++) {
+      if ((shapeBoundary.topLeft.axes[0] < fence->topLeft.axes[0]) ||
+	  (shapeBoundary.botRight.axes[0] > fence->botRight.axes[0]) ) {
+	int velocity = -ml->velocity.axes[0];// = -ml->velocity.axes[axis];
+	newPos.axes[0] += (velocity);
+      }
+      // }
   newPos.axes[1] -= ml->velocity.axes[1];
   ml->layer->posNext = newPos;
     // } /**< for ml */
 }
 
-void moveItDown(){
-
+void moveDown(MovLayer *ml, Region *fence){
+  Vec2 newPos;
+  u_char axis;
+  Region shapeBoundary;
+  vec2Add(&newPos, &ml->layer->posNext, &ml->velocity); 
+  abShapeGetBounds(ml->layer->abShape, &newPos, &shapeBoundary);
+  // for (axis = 0; axis < 1; axis ++) {
+      if ((shapeBoundary.topLeft.axes[1] < fence->topLeft.axes[1]) ||
+	  (shapeBoundary.botRight.axes[1] > fence->botRight.axes[1]) ) {
+	int velocity = -ml->velocity.axes[1];// = -ml->velocity.axes[axis];
+	newPos.axes[1] += (velocity);
+      }
+      // }
+  newPos.axes[0] -= ml->velocity.axes[0];
+  ml->layer->posNext = newPos;
+    // } /**< for ml */
 }
+
 
 MovLayer ml0 = { &layer0, {2,1}, 0 }; 
 
@@ -165,7 +173,9 @@ void wdt_c_handler(){
   P1OUT |= GREEN_LED;		      /**< Green LED on when cpu on */
   count ++;
   if (count == 15) {
-    if(!(p2sw_read() & 1) ) moveIt(&ml1, &fieldFence);
+    if(bt4) moveRight(&ml1, &fieldFence);
+    if(bt3) moveDown(&ml1, &fieldFence);
+
     // mlAdvance(&ml0, &fieldFence);
     if (p2sw_read())
       redrawScreen = 1;
